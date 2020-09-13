@@ -103,20 +103,17 @@ struct FloatType
 
 float FloatType::add(float lhs, float rhs)
 {
-    float res = lhs + rhs;
-    return res;
+    return lhs + rhs;
 }
 
 float FloatType::subtract(float lhs, float rhs)
 {
-    float res = lhs - rhs;
-    return res;
+    return lhs - rhs;
 }
 
 float FloatType::multiply (float lhs, float rhs)
 {
-    float res = lhs * rhs;
-    return res;
+    return lhs * rhs;
 }
 
 float FloatType::divide (float lhs, float rhs)
@@ -125,8 +122,7 @@ float FloatType::divide (float lhs, float rhs)
     { 
         std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
     }
-    float res = lhs / rhs;
-    return res;
+    return lhs / rhs;
 }
 
 struct DoubleType 
@@ -139,20 +135,17 @@ struct DoubleType
 
 double DoubleType::add(double lhs, double rhs)
 {
-    double res = lhs + rhs;
-    return res;
+    return lhs + rhs;
 }
 
 double DoubleType::subtract(double lhs, double rhs)
 {
-    double res = lhs - rhs;
-    return res;
+    return lhs - rhs;
 }
 
 double DoubleType::multiply (double lhs, double rhs)
 {
-    double res = lhs * rhs;
-    return res;
+    return lhs * rhs;
 }
 
 double DoubleType::divide (double lhs, double rhs)
@@ -161,8 +154,7 @@ double DoubleType::divide (double lhs, double rhs)
     { 
         std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
     } 
-    double res = lhs / rhs;
-    return res;
+    return lhs / rhs;
 }
 
 struct IntType 
@@ -175,20 +167,17 @@ struct IntType
 
 int IntType::add(int lhs, int rhs)
 {
-    int res = lhs + rhs;
-    return res;
+    return lhs + rhs;
 }
 
 int IntType::subtract(int lhs, int rhs)
 {
-    int res = lhs - rhs;
-    return res;
+    return lhs - rhs;
 }
 
 int IntType::multiply (int lhs, int rhs)
 {
-    int res = lhs * rhs;
-    return res;
+    return lhs * rhs;
 }
 
 int IntType::divide (int lhs, int rhs)
@@ -199,8 +188,7 @@ int IntType::divide (int lhs, int rhs)
         std::cout << "returning lhs" << std::endl;
         return lhs;
     } 
-    int res = lhs / rhs;
-    return res;
+    return lhs / rhs;
 }
 
 int main() 
