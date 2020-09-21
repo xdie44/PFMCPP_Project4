@@ -13,16 +13,22 @@ New/This/Pointers/References conclusion
      on the lines below it, write a struct named 'HeapA' that correctly shows how to own an instance of 'A' 
          on the heap without leaking, without using smart pointers. 
  */
+struct A {};
 
+struct HeapA 
+{
+    HeapA() : a (new A())
+    {
 
+    }
+    ~HeapA()
+    {
+        delete a;
+        a = nullptr;
+    }
 
-
-
-
-
-
-
-
+    A* a;
+};
 
  /*
  1) Edit your 3 structs so that they own a heap-allocated primitive type without using smart pointers named 'value'
@@ -103,6 +109,51 @@ good to go!
 */
 
 #include <iostream>
+struct FloatType
+{
+    FloatType (int val) : value (new int(val)) 
+    {
+
+    }
+    ~FloatType ()
+    {
+        delete value;
+        value = nullptr;
+    }
+
+    int* value;
+};
+
+struct DoubleType
+{
+    DoubleType (int val) : value (new int(val)) 
+    {
+
+    }
+    ~DoubleType ()
+    {
+        delete value;
+        value = nullptr;
+    }
+
+    int* value;
+
+};
+
+struct IntType
+{
+    IntType (int val) : value (new int(val)) 
+    {
+
+    }
+    ~IntType ()
+    {
+        delete value;
+        value = nullptr;
+    }
+
+    int* value;
+};
 
 int main()
 {   
