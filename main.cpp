@@ -109,6 +109,7 @@ good to go!
 */
 
 #include <iostream>
+
 struct FloatType
 {
     FloatType (int val) : value (new int(val)) 
@@ -122,7 +123,42 @@ struct FloatType
     }
 
     int* value;
+
+    FloatType& add(float rhs);
+    FloatType& subtract(float rhs);
+    FloatType& multiply(float rhs);
+    FloatType& divide(float rhs);
 };
+
+FloatType& FloatType::add (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+FloatType& FloatType::subtract (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+FloatType& FloatType::multiply (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+FloatType& FloatType::divide (float rhs)
+{
+    if (rhs == 0.0f)
+    { 
+        std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
+    }
+    return *this;
+}
 
 struct DoubleType
 {
@@ -138,7 +174,42 @@ struct DoubleType
 
     int* value;
 
+    DoubleType& add(float rhs);
+    DoubleType& subtract(float rhs);
+    DoubleType& multiply(float rhs);
+    DoubleType& divide(float rhs);
+
 };
+
+DoubleType& DoubleType::add (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+DoubleType& DoubleType::subtract (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+DoubleType& DoubleType::multiply (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+DoubleType& DoubleType::divide (float rhs)
+{
+    if (rhs == 0.0f)
+    { 
+        std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
+    }
+    return *this;
+}
 
 struct IntType
 {
@@ -153,7 +224,42 @@ struct IntType
     }
 
     int* value;
+
+    IntType& add(float rhs);
+    IntType& subtract(float rhs);
+    IntType& multiply(float rhs);
+    IntType& divide(float rhs);
 };
+
+IntType& IntType::add (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+IntType& IntType::subtract (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+IntType& IntType::multiply (float rhs)
+{
+    *value += rhs;
+
+    return *this;
+}
+
+IntType& IntType::divide (float rhs)
+{
+    if (rhs == 0.0f)
+    { 
+        std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
+    }
+    return *this;
+}
 
 int main()
 {   
@@ -226,7 +332,8 @@ int main()
 
  Wait for my code review.
  */
-
+ 
+/*
 #include <iostream>
 
 struct FloatType 
@@ -366,4 +473,4 @@ int main()
     std::cout << "good to go!" << std::endl;
 }
 
-
+*/
