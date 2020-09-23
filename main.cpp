@@ -125,7 +125,7 @@ struct FloatType
         value = nullptr;
     }
 
-    float* value;
+    float* value = nullptr;
 
     FloatType& add(float rhs);
     FloatType& subtract(float rhs);
@@ -160,7 +160,7 @@ struct DoubleType
         value = nullptr;
     }
 
-    double* value;
+    double* value = nullptr;
 
     DoubleType& add(double rhs);
     DoubleType& subtract(double rhs);
@@ -195,7 +195,7 @@ struct IntType
         value = nullptr;
     }
 
-    int* value;
+    int* value = nullptr;
 
     IntType& add(int rhs);
     IntType& subtract(int rhs);
@@ -437,7 +437,7 @@ IntType& IntType::divide (int rhs)
     }
     else
     {
-    *value /= rhs;
+        *value /= rhs;
     }
 
     return *this;
