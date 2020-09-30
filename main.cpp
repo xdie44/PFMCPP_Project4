@@ -120,7 +120,7 @@ struct IntType;
 
 struct FloatType
 {
-    FloatType (float val) : value (new float(val)) 
+    FloatType (float val) : value (new float (val))
     {
 
     }
@@ -136,6 +136,8 @@ struct FloatType
     FloatType& subtract(float rhs);
     FloatType& multiply(float rhs);
     FloatType& divide(float rhs);
+
+    operator float() { return *value; }
 
 };
 
@@ -158,6 +160,8 @@ struct DoubleType
     DoubleType& multiply(double rhs);
     DoubleType& divide(double rhs);
 
+    operator double() { return *value; }
+
 };
 
 struct IntType
@@ -178,6 +182,8 @@ struct IntType
     IntType& subtract(int rhs);
     IntType& multiply(int rhs);
     IntType& divide(int rhs);
+
+    operator int() { return *value; }
 
 };
 
@@ -293,14 +299,14 @@ void part3()
     IntType it ( 34 );
     DoubleType pi( 3.14 );
 
-    std::cout << "The result of FloatType^3 divided by IntType is: " << ft.multiply( ft ).multiply( ft ).divide( it ) << std::endl;
-    std::cout << "The result of DoubleType times 3 plus IntType is : " << dt.multiply( 3 ).add( it ) << std::endl;
-    std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it.divide( pi ).multiply( dt ).subtract( ft ) << std::endl;
+    std::cout << "The result of FloatType^3 divided by IntType is: " << ft.multiply( ft ).multiply( static_cast<float> (ft) ).divide( static_cast<float> (it) ) << std::endl;
+    std::cout << "The result of DoubleType times 3 plus IntType is : " << dt.multiply( static_cast<double>(3) ).add( static_cast<double>(it) ) << std::endl;
+    std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it.divide( static_cast<int>(pi) ).multiply( static_cast<int>(dt) ).subtract( static_cast<int>(ft) ) << std::endl;
     std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
-    std::cout << it.multiply(it).divide(0).divide(0.0f).divide(0.0) << std::endl;
+    std::cout << it.multiply(static_cast<int>(it)).divide(0).divide(static_cast<int>(0.0f)).divide(static_cast<int>(0.0)) << std::endl;
     
-    std::cout << "FloatType x IntType  =  " << it.multiply( ft ) << std::endl;
-    std::cout << "(IntType + DoubleType + FloatType) x 24 = " << it.add( dt ).add( ft ).multiply( 24 ) << std::endl;
+    std::cout << "FloatType x IntType  =  " << it.multiply( static_cast<int>(ft) ) << std::endl;
+    std::cout << "(IntType + DoubleType + FloatType) x 24 = " << it.add( static_cast<int>(dt) ).add( static_cast<int>(ft) ).multiply( 24 ) << std::endl;
 }
 
 int main()
@@ -321,7 +327,7 @@ int main()
     std::cout << "DoubleType add result=" << *dt.add(2.0).value << std::endl;
     std::cout << "DoubleType subtract result=" << *dt.subtract(2.0).value << std::endl;
     std::cout << "DoubleType multiply result=" << *dt.multiply(2.0).value << std::endl;
-    std::cout << "DoubleType divide result=" << *dt.divide(5.f).value << std::endl << std::endl;
+    std::cout << "DoubleType divide result=" << *dt.divide(static_cast<double>(5.f)).value << std::endl << std::endl;
 
     std::cout << "IntType add result=" << *it.add(2).value << std::endl;
     std::cout << "IntType subtract result=" << *it.subtract(2).value << std::endl;
@@ -341,7 +347,7 @@ int main()
     std::cout << "Initial value of it: " << *it.value << std::endl;
     // --------
     std::cout << "Use of function concatenation (mixed type arguments) " << std::endl;
-    std::cout << "New value of dt = (dt * it) / 5.0f + ft = " << *(dt.multiply(it).divide(5.0f).add(ft).value) << std::endl;
+    std::cout << "New value of dt = (dt * it) / 5.0f + ft = " << *(dt.multiply(static_cast<double>(it)).divide(static_cast<double>(5.0f)).add(static_cast<double>(ft)).value) << std::endl;
 
     std::cout << "---------------------\n" << std::endl; 
     
@@ -353,6 +359,8 @@ int main()
     std::cout << "New value of dt = dt / 0 = " << *dt.divide(0).value << std::endl;
 
     std::cout << "---------------------\n" << std::endl; 
+
+    part3();
 
     std::cout << "good to go!\n";
 
