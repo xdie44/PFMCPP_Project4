@@ -115,8 +115,8 @@ struct HeapA
 
 #include <iostream>
 
-struct DoubleType;
-struct IntType;
+struct DoubleType; FIXME: 6) clean up any forward declaration that you might have.
+struct IntType; FIXME: 6) clean up any forward declaration that you might have.
 
 struct FloatType
 {
@@ -130,7 +130,7 @@ struct FloatType
         value = nullptr;
     }
 
-    float* value = nullptr;
+    float* value = nullptr; FIXME: 5) make your member variable private.
 
     FloatType& add(float rhs);
     FloatType& subtract(float rhs);
@@ -153,7 +153,7 @@ struct DoubleType
         value = nullptr;
     }
 
-    double* value = nullptr;
+    double* value = nullptr; FIXME: 5) make your member variable private.
 
     DoubleType& add(double rhs);
     DoubleType& subtract(double rhs);
@@ -176,7 +176,7 @@ struct IntType
         value = nullptr;
     }
 
-    int* value = nullptr;
+    int* value = nullptr; FIXME: 5) make your member variable private.
 
     IntType& add(int rhs);
     IntType& subtract(int rhs);
