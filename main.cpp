@@ -169,6 +169,8 @@ struct HeapA
 
 #include <iostream>
 
+struct IntType;
+struct DoubleType;
 
 struct FloatType
 {
@@ -188,6 +190,14 @@ struct FloatType
     FloatType& subtract(float rhs);
     FloatType& multiply(float rhs);
     FloatType& divide(float rhs);
+
+    FloatType& pow(float pow);
+    FloatType& powInternal (float pow);
+    
+    FloatType& pow(const IntType&);
+    FloatType& pow(const FloatType&);
+    FloatType& pow(const DoubleType&);
+
 
     operator float() { return *value; }
 
@@ -216,6 +226,13 @@ struct DoubleType
     DoubleType& multiply(double rhs);
     DoubleType& divide(double rhs);
 
+    DoubleType& pow(double pow);
+    DoubleType& powInternal (double pow);
+
+    DoubleType& pow(const IntType&);
+    DoubleType& pow(const FloatType&);
+    DoubleType& pow(const DoubleType&);
+
     operator double() { return *value; }
 
     private:
@@ -241,6 +258,13 @@ struct IntType
     IntType& subtract(int rhs);
     IntType& multiply(int rhs);
     IntType& divide(int rhs);
+
+    IntType& pow(int pow);
+    IntType& powInternal (int pow);
+
+    IntType& pow(const IntType&);
+    IntType& pow(const FloatType&);
+    IntType& pow(const DoubleType&);
 
     operator int() { return *value; }
 
