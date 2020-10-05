@@ -168,6 +168,8 @@ struct HeapA
  
 
 #include <iostream>
+#include <cmath>
+
 
 struct IntType;
 struct DoubleType;
@@ -186,24 +188,24 @@ struct FloatType
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
 
+
     FloatType& add(float rhs);
     FloatType& subtract(float rhs);
     FloatType& multiply(float rhs);
     FloatType& divide(float rhs);
 
-    FloatType& pow(float pow);
-    FloatType& powInternal (float pow);
+    operator float() const { return *value; }
+
+    FloatType& pow(float ft);
     
-    FloatType& pow(const IntType&);
-    FloatType& pow(const FloatType&);
-    FloatType& pow(const DoubleType&);
-
-
-    operator float() { return *value; }
+    FloatType& pow(const FloatType& ft);
+    FloatType& pow(const DoubleType& dt);
+    FloatType& pow(const IntType& it);
 
     private:
 
     float* value = nullptr;
+    FloatType& powInternal(const float f);
 
 };
 
@@ -226,17 +228,17 @@ struct DoubleType
     DoubleType& multiply(double rhs);
     DoubleType& divide(double rhs);
 
-    DoubleType& pow(double pow);
-    DoubleType& powInternal (double pow);
+    operator double() const { return *value; }
 
-    DoubleType& pow(const IntType&);
-    DoubleType& pow(const FloatType&);
-    DoubleType& pow(const DoubleType&);
+    DoubleType& pow(double dt);
 
-    operator double() { return *value; }
+    DoubleType& pow(const FloatType& ft);
+    DoubleType& pow(const DoubleType& dt);
+    DoubleType& pow(const IntType& it);
 
     private:
     double* value = nullptr;
+    DoubleType& powInternal (const double pow);
 
 };
 
@@ -259,17 +261,17 @@ struct IntType
     IntType& multiply(int rhs);
     IntType& divide(int rhs);
 
-    IntType& pow(int pow);
-    IntType& powInternal (int pow);
+    IntType& pow(int it);
 
-    IntType& pow(const IntType&);
-    IntType& pow(const FloatType&);
-    IntType& pow(const DoubleType&);
+    IntType& pow(const FloatType& ft);
+    IntType& pow(const DoubleType& dt);
+    IntType& pow(const IntType& it);
 
-    operator int() { return *value; }
+    operator int() const { return *value; }
 
     private:
     int* value = nullptr;
+    IntType& powInternal (const int pow);
 
 };
 
@@ -284,6 +286,8 @@ struct Point
 private:
     float x{0}, y{0};
 };
+
+//=====================================
 
 FloatType& FloatType::add (float rhs)
 {
@@ -318,6 +322,34 @@ FloatType& FloatType::divide (float rhs)
     return *this;
 }
 
+FloatType& FloatType::pow( float ft )
+{
+    return powInternal( ft );
+}
+
+FloatType& FloatType::powInternal(float ft)
+{
+    *value = std::pow(*value, ft);
+    return *this; 
+}
+
+FloatType& FloatType::pow( const FloatType& ft )
+{
+    return powInternal(static_cast<float>(ft));
+}
+
+FloatType& FloatType::pow( const DoubleType& dt )
+{
+    return powInternal(static_cast<float>(dt));
+}
+
+FloatType& FloatType::pow( const IntType& it )
+{
+    return powInternal(static_cast<float>(it));
+}
+
+//=====================================
+
 DoubleType& DoubleType::add (double rhs)
 {
     *value += rhs;
@@ -351,6 +383,33 @@ DoubleType& DoubleType::divide (double rhs)
     return *this;
 }
 
+DoubleType& DoubleType::powInternal (double dt)
+{
+    *value = std::pow(*value, dt);
+    return *this;
+}
+
+DoubleType& DoubleType::pow( const double dt )
+{
+    return powInternal( dt );
+}
+
+DoubleType& DoubleType::pow( const FloatType& ft )
+{
+    return powInternal(static_cast<double>(ft));
+}
+
+DoubleType& DoubleType::pow( const DoubleType& dt )
+{
+    return powInternal(static_cast<double>(dt));
+}
+
+DoubleType& DoubleType::pow( const IntType& it )
+{
+    return powInternal(static_cast<double>(it));
+}
+
+//=====================================
 
 IntType& IntType::add (int rhs)
 {
@@ -387,7 +446,33 @@ IntType& IntType::divide (int rhs)
     return *this;
 }
 
+IntType& IntType::powInternal (const int it)
+{
+    *value = std::pow(*value, it);
+    return *this;
+}
 
+IntType& IntType::pow( int it )
+{
+    return powInternal( it );
+}
+
+IntType& IntType::pow( const FloatType& ft )
+{
+    return powInternal(static_cast<int>(ft));
+}
+
+IntType& IntType::pow( const DoubleType& dt )
+{
+    return powInternal(static_cast<int>(dt));
+}
+
+IntType& IntType::pow( const IntType& it )
+{
+    return powInternal(static_cast<int>(it));
+}
+
+//=====================================
 
 void part3()
 {
