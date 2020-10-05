@@ -277,12 +277,41 @@ struct IntType
 
 struct Point
 {
+    Point (const FloatType& a, const FloatType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
+
+    Point (const DoubleType& a, const DoubleType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
+
+    Point (const IntType& a, const IntType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
+
+    ~Point() {}
+
     Point& multiply(float m)
     {
         x *= m;
         y *= m;
         return *this;
     }
+
+    Point& multiply(FloatType& ft)
+    {
+        return multiply(static_cast<float>(ft));
+    }
+
+    Point& multiply(DoubleType& dt)
+    {
+        return multiply(static_cast<float>(dt));
+    }
+
+    Point& multiply(IntType& it)
+    {
+        return multiply(static_cast<float>(it));
+    }
+
+    void toString()
+    {
+        std::cout << "Point { x: " << x << ", y: " << y << " }" << std::endl;
+    }
+
 private:
     float x{0}, y{0};
 };
@@ -448,7 +477,7 @@ IntType& IntType::divide (int rhs)
 
 IntType& IntType::powInternal (const int it)
 {
-    *value = std::pow(*value, it);
+    *value = static_cast<int>(std::pow(*value, it));
     return *this;
 }
 
