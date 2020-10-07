@@ -201,10 +201,10 @@ struct FloatType
     //float* value = nullptr; FIXME: 5) make your member variable private.
 
 
-    FloatType& add(float rhs);
-    FloatType& subtract(float rhs);
-    FloatType& multiply(float rhs);
-    FloatType& divide(float rhs);
+    FloatType& operator+=(float rhs);
+    FloatType& operator-=(float rhs);
+    FloatType& operator*=(float rhs);
+    FloatType& operator/=(float rhs);
 
     operator float() const { return *value; }
 
@@ -235,10 +235,10 @@ struct DoubleType
 
     //double* value = nullptr; FIXME: 5) make your member variable private.
 
-    DoubleType& add(double rhs);
-    DoubleType& subtract(double rhs);
-    DoubleType& multiply(double rhs);
-    DoubleType& divide(double rhs);
+    DoubleType& operator+=(double rhs);
+    DoubleType& operator-=(double rhs);
+    DoubleType& operator*=(double rhs);
+    DoubleType& operator/=(double rhs);
 
     operator double() const { return *value; }
 
@@ -268,10 +268,10 @@ struct IntType
 
     //int* value = nullptr; FIXME: 5) make your member variable private.
 
-    IntType& add(int rhs);
-    IntType& subtract(int rhs);
-    IntType& multiply(int rhs);
-    IntType& divide(int rhs);
+    IntType& operator+=(int rhs);
+    IntType& operator-=(int rhs);
+    IntType& operator*=(int rhs);
+    IntType& operator/=(int rhs);
 
     IntType& pow(int it);
 
@@ -330,28 +330,28 @@ private:
 
 //=====================================
 
-FloatType& FloatType::add (float rhs)
+FloatType& FloatType::operator+= (float rhs)
 {
     *value += rhs;
 
     return *this;
 }
 
-FloatType& FloatType::subtract (float rhs)
+FloatType& FloatType::operator-= (float rhs)
 {
     *value -= rhs;
 
     return *this;
 }
 
-FloatType& FloatType::multiply (float rhs)
+FloatType& FloatType::operator*= (float rhs)
 {
     *value *= rhs;
 
     return *this;
 }
 
-FloatType& FloatType::divide (float rhs)
+FloatType& FloatType::operator/= (float rhs)
 {
     if (rhs == 0.0f)
     { 
@@ -391,28 +391,28 @@ FloatType& FloatType::pow( const IntType& it )
 
 //=====================================
 
-DoubleType& DoubleType::add (double rhs)
+DoubleType& DoubleType::operator+= (double rhs)
 {
     *value += rhs;
 
     return *this;
 }
 
-DoubleType& DoubleType::subtract (double rhs)
+DoubleType& DoubleType::operator-= (double rhs)
 {
     *value -= rhs;
 
     return *this;
 }
 
-DoubleType& DoubleType::multiply (double rhs)
+DoubleType& DoubleType::operator*= (double rhs)
 {
     *value *= rhs;
 
     return *this;
 }
 
-DoubleType& DoubleType::divide (double rhs)
+DoubleType& DoubleType::operator/= (double rhs)
 {
     if (rhs == 0.0)
     { 
@@ -452,28 +452,28 @@ DoubleType& DoubleType::pow( const IntType& it )
 
 //=====================================
 
-IntType& IntType::add (int rhs)
+IntType& IntType::operator+= (int rhs)
 {
     *value += rhs;
 
     return *this;
 }
 
-IntType& IntType::subtract (int rhs)
+IntType& IntType::operator-= (int rhs)
 {
     *value -= rhs;
 
     return *this;
 }
 
-IntType& IntType::multiply (int rhs)
+IntType& IntType::operator*= (int rhs)
 {
     *value *= rhs;
 
     return *this;
 }
 
-IntType& IntType::divide (int rhs)
+IntType& IntType::operator/= (int rhs)
 {
     if (rhs == 0)
     { 
