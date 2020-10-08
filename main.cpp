@@ -517,9 +517,13 @@ void part3()
     std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it << std::endl;
 
     it *= it;
-    it /= 0;
 
     std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
+    
+    it /= 0;
+    it /= static_cast<int>(0.0f);
+    it /= static_cast<int>(0.0);
+    
     std::cout << it << std::endl;
     
     it *= static_cast<int>(ft);
@@ -714,17 +718,23 @@ int main()
     // --------
     std::cout << "Intercept division by 0 " << std::endl;
 
+    std::cout << "New value of it = it / 0 = "; 
+    
     it /= 0;
 
-    std::cout << "New value of it = it / 0 = " << it << std::endl;
+    std::cout << it << std::endl;
 
+    std::cout << "New value of ft = ft / 0 = ";
+    
     ft /= 0;
 
-    std::cout << "New value of ft = ft / 0 = " << ft << std::endl;
+    std::cout << ft << std::endl;
 
+    std::cout << "New value of dt = dt / 0 = "; 
+    
     dt /= 0;
 
-    std::cout << "New value of dt = dt / 0 = " << dt << std::endl;
+    std::cout << dt << std::endl;
 
     std::cout << "---------------------\n" << std::endl; 
 
