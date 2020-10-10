@@ -260,6 +260,10 @@ struct FloatType
     FloatType& pow(const DoubleType& dt);
     FloatType& pow(const IntType& it);
 
+    FloatType& apply ();
+    FloatType& apply ();
+
+
     private:
 
     float* value = nullptr;
@@ -294,6 +298,9 @@ struct DoubleType
     DoubleType& pow(const DoubleType& dt);
     DoubleType& pow(const IntType& it);
 
+    DoubleType& apply ();
+    DoubleType& apply ();
+
     private:
     double* value = nullptr;
     DoubleType& powInternal (const double pow);
@@ -324,6 +331,9 @@ struct IntType
     IntType& pow(const FloatType& ft);
     IntType& pow(const DoubleType& dt);
     IntType& pow(const IntType& it);
+
+    IntType& apply();
+    IntType& apply();
 
     operator int() const { return *value; }
 
@@ -435,6 +445,16 @@ FloatType& FloatType::pow( const IntType& it )
     return powInternal(static_cast<float>(it));
 }
 
+FloatType& FloatType::apply();
+{
+    return *this;
+}
+
+FloatType& FloatType::apply();
+{
+    return *this;
+}
+
 //=====================================
 
 DoubleType& DoubleType::operator+= (double rhs)
@@ -494,6 +514,16 @@ DoubleType& DoubleType::pow( const DoubleType& dt )
 DoubleType& DoubleType::pow( const IntType& it )
 {
     return powInternal(static_cast<double>(it));
+}
+
+DoubleType& DoubleType::apply();
+{
+    return *this;
+}
+
+DoubleType& DoubleType::apply();
+{
+    return *this;
 }
 
 //=====================================
@@ -557,6 +587,11 @@ IntType& IntType::pow( const DoubleType& dt )
 IntType& IntType::pow( const IntType& it )
 {
     return powInternal(static_cast<int>(it));
+}
+
+IntType& IntType::apply();
+{
+    return *this;
 }
 
 //=====================================
