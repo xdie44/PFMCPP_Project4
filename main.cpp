@@ -749,7 +749,11 @@ void part6()
     
     std::cout << "Calling FloatType::apply() using a lambda (adds 7.0f) and FloatType as return type:" << std::endl;
     std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply( [&](float& f)-> FloatType& { f += 7.0f; return ft3; } );
+    ft3.apply( [&](float& f)-> FloatType& 
+    { 
+        f += 7.0f; 
+        return ft3; 
+    });
     std::cout << "ft3 after: " << ft3 << std::endl;
     std::cout << "Calling FloatType::apply() using a free function (adds 7.0f) and void as return type:" << std::endl;
     std::cout << "ft3 before: " << ft3 << std::endl;
@@ -759,7 +763,11 @@ void part6()
 
     std::cout << "Calling DoubleType::apply() using a lambda (adds 6.0) and DoubleType as return type:" << std::endl;
     std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply( [&](double& f)-> DoubleType& { f += 6.0; return dt3; } );
+    dt3.apply( [&](double& f)-> DoubleType& 
+    { 
+        f += 6.0;
+        return dt3;
+    });
     std::cout << "dt3 after: " << dt3 << std::endl;
     std::cout << "Calling DoubleType::apply() using a free function (adds 6.0) and void as return type:" << std::endl;
     std::cout << "dt3 before: " << dt3 << std::endl;
@@ -769,7 +777,11 @@ void part6()
 
     std::cout << "Calling IntType::apply() using a lambda (adds 5) and IntType as return type:" << std::endl;
     std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply( [&](int& f)-> IntType& { f += 5; return it3; } );
+    it3.apply( [&](int& f)-> IntType& 
+    { 
+        f += 5; 
+        return it3; 
+    });
     std::cout << "it3 after: " << it3 << std::endl;
     std::cout << "Calling IntType::apply() using a free function (adds 5) and void as return type:" << std::endl;
     std::cout << "it3 before: " << it3 << std::endl;
