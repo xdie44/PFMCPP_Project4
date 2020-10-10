@@ -298,8 +298,8 @@ struct DoubleType
     DoubleType& pow(const DoubleType& dt);
     DoubleType& pow(const IntType& it);
 
-    DoubleType& apply (std::function<DoubleType&(double&> func);
-    DoubleType& apply (void(*func)(double&));
+    DoubleType& apply (std::function<DoubleType&(double&> f);
+    DoubleType& apply (void(*f)(double&));
 
     private:
     double* value = nullptr;
@@ -332,8 +332,8 @@ struct IntType
     IntType& pow(const DoubleType& dt);
     IntType& pow(const IntType& it);
 
-    IntType& apply(std::function<IntType&(int&> func);
-    IntType& apply(void(*func)(int&));
+    IntType& apply(std::function<IntType&(int&> f);
+    IntType& apply(void(*f)(int&));
 
     operator int() const { return *value; }
 
@@ -445,13 +445,23 @@ FloatType& FloatType::pow( const IntType& it )
     return powInternal(static_cast<float>(it));
 }
 
-FloatType& FloatType::apply(std::function<FloatType&(float&> func);
+FloatType& FloatType::apply(std::function<FloatType&(float&> f);
 {
+    if( f )
+    {
+        return f(*value); 
+    }
+
     return *this;
 }
 
-FloatType& FloatType::apply(void(*func)(float&));
+FloatType& FloatType::apply(void(*f)(float&));
 {
+    if( f )
+    {
+        f(*value); 
+    }
+
     return *this;
 }
 
@@ -516,13 +526,23 @@ DoubleType& DoubleType::pow( const IntType& it )
     return powInternal(static_cast<double>(it));
 }
 
-DoubleType& DoubleType::apply(std::function<DoubleType&(double&> func);
+DoubleType& DoubleType::apply(std::function<DoubleType&(double&> f);
 {
+    if( f )
+    {
+        return f(*value); 
+    }
+
     return *this;
 }
 
-DoubleType& DoubleType::apply(void(*func)(double&));
+DoubleType& DoubleType::apply(void(*f)(double&));
 {
+    if( f )
+    {
+        f(*value); 
+    }
+
     return *this;
 }
 
@@ -589,13 +609,23 @@ IntType& IntType::pow( const IntType& it )
     return powInternal(static_cast<int>(it));
 }
 
-IntType& IntType::apply(std::function<IntType&(int&> func);
+IntType& IntType::apply(std::function<IntType&(int&> f);
 {
+    f( f )
+    {
+        return f(*value); 
+    }
+
     return *this;
 }
 
-IntType& IntType::apply(void(*func)(int&));
+IntType& IntType::apply(void(*f)(int&));
 {
+    if( f )
+    {
+        f(*value); 
+    }
+    
     return *this;
 }
 
