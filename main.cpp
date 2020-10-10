@@ -260,8 +260,8 @@ struct FloatType
     FloatType& pow(const DoubleType& dt);
     FloatType& pow(const IntType& it);
 
-    FloatType& apply ();
-    FloatType& apply ();
+    FloatType& apply (std::function<FloatType&(float&> func);
+    FloatType& apply (void(*func)(float&));
 
 
     private:
@@ -298,8 +298,8 @@ struct DoubleType
     DoubleType& pow(const DoubleType& dt);
     DoubleType& pow(const IntType& it);
 
-    DoubleType& apply ();
-    DoubleType& apply ();
+    DoubleType& apply (std::function<DoubleType&(double&> func);
+    DoubleType& apply (void(*func)(double&));
 
     private:
     double* value = nullptr;
@@ -332,8 +332,8 @@ struct IntType
     IntType& pow(const DoubleType& dt);
     IntType& pow(const IntType& it);
 
-    IntType& apply();
-    IntType& apply();
+    IntType& apply(std::function<IntType&(int&> func);
+    IntType& apply(void(*func)(int&));
 
     operator int() const { return *value; }
 
@@ -445,12 +445,12 @@ FloatType& FloatType::pow( const IntType& it )
     return powInternal(static_cast<float>(it));
 }
 
-FloatType& FloatType::apply();
+FloatType& FloatType::apply(std::function<FloatType&(float&> func);
 {
     return *this;
 }
 
-FloatType& FloatType::apply();
+FloatType& FloatType::apply(void(*func)(float&));
 {
     return *this;
 }
@@ -516,12 +516,12 @@ DoubleType& DoubleType::pow( const IntType& it )
     return powInternal(static_cast<double>(it));
 }
 
-DoubleType& DoubleType::apply();
+DoubleType& DoubleType::apply(std::function<DoubleType&(double&> func);
 {
     return *this;
 }
 
-DoubleType& DoubleType::apply();
+DoubleType& DoubleType::apply(void(*func)(double&));
 {
     return *this;
 }
@@ -589,7 +589,12 @@ IntType& IntType::pow( const IntType& it )
     return powInternal(static_cast<int>(it));
 }
 
-IntType& IntType::apply();
+IntType& IntType::apply(std::function<IntType&(int&> func);
+{
+    return *this;
+}
+
+IntType& IntType::apply(void(*func)(int&));
 {
     return *this;
 }
