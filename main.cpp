@@ -318,34 +318,16 @@ struct Numeric
 
 struct Point
 {
-    Point (const FloatType& a, const FloatType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
-
-    Point (const DoubleType& a, const DoubleType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
-
-    Point (const IntType& a, const IntType& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
+    template<typename Type1, typename Type2>
+    Point (const Type1& a, const Type2& b) : x(static_cast<float>(a)),y(static_cast<float>(b)) {}
 
     ~Point() {}
 
-    Point& multiply(float m)
-    {
-        x *= m;
-        y *= m;
-        return *this;
-    }
+    template<typename T>
 
-    Point& multiply(const FloatType& ft)
+    Point& multiply(const T& ft)
     {
         return multiply(static_cast<float>(ft));
-    }
-
-    Point& multiply(const DoubleType& dt)
-    {
-        return multiply(static_cast<float>(dt));
-    }
-
-    Point& multiply(const IntType& it)
-    {
-        return multiply(static_cast<float>(it));
     }
 
     void toString()
@@ -377,10 +359,10 @@ void myIntFreeFunct(int& value)
 
 void part3()
 {
-    FloatType ft( 5.5f );
-    DoubleType dt( 11.1 );
-    IntType it ( 34 );
-    DoubleType pi( 3.14 );
+    Numeric ft( 5.5f );
+    Numeric dt( 11.1 );
+    Numeric it ( 34 );
+    Numeric pi( 3.14 );
 
     ft *= ft;
     ft *= ft;
@@ -426,15 +408,15 @@ void part4()
     // ------------------------------------------------------------
     //                          Power tests
     // ------------------------------------------------------------
-    FloatType ft1(2);
-    DoubleType dt1(2);
-    IntType it1(2);    
+    Numeric ft1(2);
+    Numeric dt1(2);
+    Numeric it1(2);    
     int floatExp = 2.0f;
     int doubleExp = 2.0;
     int intExp = 2;
-    IntType itExp(2);
-    FloatType ftExp(2.0f);
-    DoubleType dtExp(2.0);
+    Numeric itExp(2);
+    Numeric ftExp(2.0f);
+    Numeric dtExp(2.0);
     
     // Power tests with FloatType
     std::cout << "Power tests with FloatType " << std::endl;
@@ -463,9 +445,9 @@ void part4()
     // ------------------------------------------------------------
     //                          Point tests
     // ------------------------------------------------------------
-    FloatType ft2(3.0f);
-    DoubleType dt2(4.0);
-    IntType it2(5);
+    Numeric ft2(3.0f);
+    Numeric dt2(4.0);
+    Numeric it2(5);
     float floatMul = 6.0f;
 
     // Point tests with float
@@ -565,8 +547,13 @@ void part7()
     std::cout << "ft3 before: " << ft3 << std::endl;
 
     {
-        using Type = #4;
-        ft3.apply( [](std::unique...){} );
+        using Type = decltype(ft3);
+        using ReturnType = decltype(ft3);
+        ft3.apply( [&ft3](std::unique_ptr<NumericType>& ui) -> ReturnType&
+        {
+            *ui += 7.0f; 
+            return i;
+        } );
     }
 
     std::cout << "ft3 after: " << ft3 << std::endl;
@@ -580,7 +567,7 @@ void part7()
     std::cout << "dt3 before: " << dt3 << std::endl;
 
     {
-        using Type = #4;
+        using Type = decltype(dt3);
         dt3.apply( [](std::unique...){} ); // This calls the templated apply fcn
     }
     
@@ -595,7 +582,7 @@ void part7()
     std::cout << "it3 before: " << it3 << std::endl;
 
     {
-        using Type = #4;
+        using Type = decltype(it3);
         it3.apply( [](std::unique...){} );
     }
     std::cout << "it3 after: " << it3 << std::endl;
