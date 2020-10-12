@@ -263,13 +263,29 @@ struct Numeric
     }
     Numeric& operator/=(Type rhs)
     {
-        if (rhs == 0.0f)
-        { 
-            std::cout << "warning: floating point division by zero!" << std::endl; 
+        if constexpr (std::is_same<Type, int>::value)
+        {
+            if constexpr (std::is_same<decltype(rhs), int>::value)
+            {
+                if (rhs == 0)
+                {
+                    std::cout << "error: integer division by zero is an error and will crash the program!" <<std::endl;
+                    return *this;
+                }
+            }
+            
+            else if (rhs < std::numeric_limits<Type>::epsilon())
+            {
+                std::cout << "can't divide integers by zero!" <<std::endl;
+                return *this;   
+            }    
         }
-
+        else if (rhs < std::numeric_limits<Type>::epsilon())
+        {
+            std::cout << "warning: floating point division by zero!" <<std::endl;           
+        }
         *value /= rhs;
-        return *this;
+        return *this;   
     }
 
     operator Type() const { return *value; }
@@ -336,30 +352,15 @@ struct Numeric<double>
         return *this;
     }
 
-    Numeric& operator /=(Type rhs)
+    Numeric& operator/=(Type rhs)
     {
-        if constexpr (std::is_same<Type, int>::value)
-        {
-            if constexpr (std::is_same<decltype(rhs), const int>::value)
-            {
-                if (rhs == 0)
-                {
-                    std::cout << "can't divide integers by zero!" <<std::endl;
-                    return *this;
-                }
-            }
-            else if (rhs < std::numeric_limits<Type>::epsilon())
-            {
-                std::cout << "can't divide integers by zero!" <<std::endl;
-                return *this;   
-            }    
+        if (rhs == 0.0)
+        { 
+            std::cout << "warning: floating point division by zero!" << std::endl; 
         }
-        else if (rhs < std::numeric_limits<Type>::epsilon())
-        {
-            std::cout << "warning: floating point division by zero!" <<std::endl;           
-        }
+
         *value /= rhs;
-        return *this;   
+        return *this;
     }
 
     operator Type() const { return *value; }
@@ -397,10 +398,16 @@ struct Point
     ~Point() {}
 
     template<typename T>
-
     Point& multiply(const T& ft)
     {
         return multiply(static_cast<float>(ft));
+    }
+
+    Point& multiply(float m)
+    {
+        x *= m;
+        y *= m;
+        return *this;
     }
 
     void toString()
@@ -465,8 +472,8 @@ void part3()
     std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
     
     it /= 0;
-    it /= static_cast<int>(0.0f);
-    it /= static_cast<int>(0.0);
+    it /= 0.0f;
+    it /= 0.0;
     
     std::cout << it << std::endl;
     
@@ -524,9 +531,9 @@ void part4()
     // ------------------------------------------------------------
     //                          Point tests
     // ------------------------------------------------------------
-    Numeric ft2(3.0f);
-    Numeric dt2(4.0);
-    Numeric it2(5);
+    Numeric<float> ft2(3.0f);
+    Numeric<double> dt2(4.0);
+    Numeric<int> it2(5);
     float floatMul = 6.0f;
 
     // Point tests with float
@@ -776,19 +783,19 @@ int main()
 
     std::cout << "New value of it = it / 0 = "; 
     
-    it /= 0;
+    it.operator/=(0);
 
     std::cout << it << std::endl;
 
     std::cout << "New value of ft = ft / 0 = ";
     
-    ft /= 0;
+    ft.operator/=(0);
 
     std::cout << ft << std::endl;
 
     std::cout << "New value of dt = dt / 0 = "; 
     
-    dt /= 0;
+    dt.operator/=(0);
 
     std::cout << dt << std::endl;
 
