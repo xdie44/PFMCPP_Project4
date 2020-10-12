@@ -281,116 +281,50 @@ struct HeapA
 struct IntType;
 struct DoubleType;
 
-struct FloatType
+
+template <typename NumberType>
+
+struct Numeric
 {
-    FloatType (float val) : value (new float (val))
+
+    using Type = <NumberType>
+
+    Numeric (Type val) : value (std::make_unique<float> val)
     {
 
     }
-    ~FloatType ()
+    ~Numeric ()
     {
-        delete value;
         value = nullptr;
     }
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
 
 
-    FloatType& operator+=(float rhs);
-    FloatType& operator-=(float rhs);
-    FloatType& operator*=(float rhs);
-    FloatType& operator/=(float rhs);
+    Numeric& operator+=(Type rhs);
+    Numeric& operator-=(Type rhs);
+    Numeric& operator*=(Type rhs);
+    Numeric& operator/=(Type rhs);
 
-    operator float() const { return *value; }
+    operator Type() const { return *value; }
 
-    FloatType& pow(float ft);
+    FloatType& pow(Type ft);
     
-    FloatType& pow(const FloatType& ft);
-    FloatType& pow(const DoubleType& dt);
-    FloatType& pow(const IntType& it);
+    Numeric& pow(const FloatType& ft);
+    Numeric& pow(const DoubleType& dt);
+    Numeric& pow(const IntType& it);
 
-    FloatType& apply (std::function<FloatType&(float&)> func);
-    FloatType& apply (void(*func)(float&));
+    Numeric& apply (std::function<FloatType&(Type&)> func);
+    Numeric& apply (void(*func)(Type&));
 
 
     private:
 
-    float* value = nullptr;
-    FloatType& powInternal(const float f);
+    std::unique_ptr<Type> value;
+    Numeric& powInternal(const Type f);
 
 };
 
-struct DoubleType
-{
-    DoubleType (double val) : value (new double(val)) 
-    {
-
-    }
-    ~DoubleType ()
-    {
-        delete value;
-        value = nullptr;
-    }
-
-    //double* value = nullptr; FIXME: 5) make your member variable private.
-
-    DoubleType& operator+=(double rhs);
-    DoubleType& operator-=(double rhs);
-    DoubleType& operator*=(double rhs);
-    DoubleType& operator/=(double rhs);
-
-    operator double() const { return *value; }
-
-    DoubleType& pow(double dt);
-
-    DoubleType& pow(const FloatType& ft);
-    DoubleType& pow(const DoubleType& dt);
-    DoubleType& pow(const IntType& it);
-
-    DoubleType& apply (std::function<DoubleType&(double&)> f);
-    DoubleType& apply (void(*f)(double&));
-
-    private:
-    double* value = nullptr;
-    DoubleType& powInternal (const double pow);
-
-};
-
-struct IntType
-{
-    IntType (int val) : value (new int(val)) 
-    {
-
-    }
-    ~IntType ()
-    {
-        delete value;
-        value = nullptr;
-    }
-
-    //int* value = nullptr; FIXME: 5) make your member variable private.
-
-    IntType& operator+=(int rhs);
-    IntType& operator-=(int rhs);
-    IntType& operator*=(int rhs);
-    IntType& operator/=(int rhs);
-
-    IntType& pow(int it);
-
-    IntType& pow(const FloatType& ft);
-    IntType& pow(const DoubleType& dt);
-    IntType& pow(const IntType& it);
-
-    IntType& apply(std::function<IntType&(int&)> f);
-    IntType& apply(void(*f)(int&));
-
-    operator int() const { return *value; }
-
-    private:
-    int* value = nullptr;
-    IntType& powInternal (const int pow);
-
-};
 
 struct Point
 {
@@ -435,28 +369,28 @@ private:
 
 //=====================================
 
-FloatType& FloatType::operator+= (float rhs)
+Numeric& Numeric::operator+= (Type rhs)
 {
     *value += rhs;
 
     return *this;
 }
 
-FloatType& FloatType::operator-= (float rhs)
+Numeric& Numeric::operator-= (Type rhs)
 {
     *value -= rhs;
 
     return *this;
 }
 
-FloatType& FloatType::operator*= (float rhs)
+Numeric& Numeric::operator*= (Type rhs)
 {
     *value *= rhs;
 
     return *this;
 }
 
-FloatType& FloatType::operator/= (float rhs)
+Numeric& Numeric::operator/= (Type rhs)
 {
     if (rhs == 0.0f)
     { 
@@ -468,114 +402,33 @@ FloatType& FloatType::operator/= (float rhs)
     return *this;
 }
 
-FloatType& FloatType::pow( float ft )
+Numeric& Numeric::pow( Type ft )
 {
     return powInternal( ft );
 }
 
-FloatType& FloatType::powInternal(float ft)
+Numeric& Numeric::powInternal(Type ft)
 {
     *value = std::pow(*value, ft);
     return *this; 
 }
 
-FloatType& FloatType::pow( const FloatType& ft )
+Numeric& Numeric::pow( const Numeric& ft )
 {
-    return powInternal(static_cast<float>(ft));
+    return powInternal(static_cast<Type>(ft));
 }
 
-FloatType& FloatType::pow( const DoubleType& dt )
+Numeric& Numeric::pow( const Numeric& dt )
 {
-    return powInternal(static_cast<float>(dt));
+    return powInternal(static_cast<Type>(dt));
 }
 
-FloatType& FloatType::pow( const IntType& it )
+Numeric& Numeric::pow( const Numeric& it )
 {
-    return powInternal(static_cast<float>(it));
+    return powInternal(static_cast<Type>(it));
 }
 
-FloatType& FloatType::apply(std::function<FloatType&(float&)> f)
-{
-    if( f )
-    {
-        return f(*value); 
-    }
-
-    return *this;
-}
-
-FloatType& FloatType::apply(void(*f)(float&))
-{
-    if( f )
-    {
-        f(*value); 
-    }
-
-    return *this;
-}
-
-//=====================================
-
-DoubleType& DoubleType::operator+= (double rhs)
-{
-    *value += rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator-= (double rhs)
-{
-    *value -= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator*= (double rhs)
-{
-    *value *= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::operator/= (double rhs)
-{
-    if (rhs == 0.0)
-    { 
-        std::cout << "warning: floating point division by zero!" << std::endl; 
-    }
-
-    *value /= rhs;
-
-    return *this;
-}
-
-DoubleType& DoubleType::powInternal (double dt)
-{
-    *value = std::pow(*value, dt);
-    return *this;
-}
-
-DoubleType& DoubleType::pow( const double dt )
-{
-    return powInternal( dt );
-}
-
-DoubleType& DoubleType::pow( const FloatType& ft )
-{
-    return powInternal(static_cast<double>(ft));
-}
-
-DoubleType& DoubleType::pow( const DoubleType& dt )
-{
-    return powInternal(static_cast<double>(dt));
-}
-
-DoubleType& DoubleType::pow( const IntType& it )
-{
-    return powInternal(static_cast<double>(it));
-}
-
-DoubleType& DoubleType::apply(std::function<DoubleType&(double&)> f)
+Numeric& Numeric::apply(std::function<Numeric&(Type&)> f)
 {
     if( f )
     {
@@ -585,7 +438,7 @@ DoubleType& DoubleType::apply(std::function<DoubleType&(double&)> f)
     return *this;
 }
 
-DoubleType& DoubleType::apply(void(*f)(double&))
+Numeric& Numeric::apply(void(*f)(Type&))
 {
     if( f )
     {
@@ -595,90 +448,7 @@ DoubleType& DoubleType::apply(void(*f)(double&))
     return *this;
 }
 
-//=====================================
-
-IntType& IntType::operator+= (int rhs)
-{
-    *value += rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator-= (int rhs)
-{
-    *value -= rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator*= (int rhs)
-{
-    *value *= rhs;
-
-    return *this;
-}
-
-IntType& IntType::operator/= (int rhs)
-{
-    if (rhs == 0)
-    { 
-        std::cout << "error: integer division by zero is an error and will crash the program!" << std::endl; 
-    }
-    else
-    {
-        *value /= rhs;
-    }
-
-    return *this;
-}
-
-IntType& IntType::powInternal (const int it)
-{
-    *value = static_cast<int>(std::pow(*value, it));
-    return *this;
-}
-
-IntType& IntType::pow( int it )
-{
-    return powInternal( it );
-}
-
-IntType& IntType::pow( const FloatType& ft )
-{
-    return powInternal(static_cast<int>(ft));
-}
-
-IntType& IntType::pow( const DoubleType& dt )
-{
-    return powInternal(static_cast<int>(dt));
-}
-
-IntType& IntType::pow( const IntType& it )
-{
-    return powInternal(static_cast<int>(it));
-}
-
-IntType& IntType::apply(std::function<IntType&(int&)> f)
-{
-    if( f )
-    {
-        return f(*value); 
-    }
-
-    return *this;
-}
-
-IntType& IntType::apply(void(*f)(int&))
-{
-    if( f )
-    {
-        f(*value); 
-    }
-
-    return *this;
-}
-
-//=====================================
+//====================================
 
 void myFloatFreeFunct(float& value)
 {
@@ -692,6 +462,8 @@ void myIntFreeFunct(int& value)
 { 
     value += 5; 
 }
+
+//====================================
 
 void part3()
 {
@@ -822,7 +594,7 @@ void part4()
     p3.toString();   
     std::cout << "---------------------\n" << std::endl;
 }
-
+/*
 void part6()
 {
     FloatType ft3(3.0f);
@@ -871,7 +643,7 @@ void part6()
     std::cout << "it3 after: " << it3 << std::endl;
     std::cout << "---------------------\n" << std::endl;    
 }
-
+*/
 int main()
 {   
     //testing instruction 0
@@ -991,7 +763,7 @@ int main()
 
     part4();
 
-    part6();
+   // part6();
 
     std::cout << "good to go!\n";
 
