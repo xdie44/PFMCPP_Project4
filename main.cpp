@@ -300,7 +300,7 @@ struct Numeric
         return *this;
     }
 
-    Numeric& apply (void(*func)(Type&) )
+    Numeric& apply (void(*f)(std::unique_ptr<Type>&) )
     {
         if( f )
         {   
@@ -359,27 +359,6 @@ private:
 
 //=====================================
 
-Numeric& Numeric::apply(std::function<Numeric&(Type&)> f)
-{
-    if( f )
-    {
-        return f(*value); 
-    }
-
-    return *this;
-}
-
-Numeric& Numeric::apply(void(*f)(Type&))
-{
-    if( f )
-    {
-        f(*value); 
-    }
-
-    return *this;
-}
-
-//====================================
 
 void myFloatFreeFunct(float& value)
 {
