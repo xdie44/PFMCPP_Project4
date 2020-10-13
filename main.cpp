@@ -261,11 +261,13 @@ struct Numeric
         *value *= rhs;
         return *this;
     }
-    Numeric& operator/=(Type rhs)
+
+    template<typename ParType>
+    Numeric& operator/=(ParType rhs)
     {
         if constexpr (std::is_same<Type, int>::value)
         {
-            if constexpr (std::is_same<decltype(rhs), int>::value)
+            if constexpr (std::is_same<ParType, int>::value)
             {
                 if (rhs == 0)
                 {
@@ -274,13 +276,13 @@ struct Numeric
                 }
             }
             
-            else if (rhs < std::numeric_limits<Type>::epsilon())
+            else if (rhs < std::numeric_limits<ParType>::epsilon())
             {
                 std::cout << "can't divide integers by zero!" <<std::endl;
                 return *this;   
             }    
         }
-        else if (rhs < std::numeric_limits<Type>::epsilon())
+        else if (rhs < std::numeric_limits<ParType>::epsilon())
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;           
         }
@@ -471,7 +473,7 @@ void part3()
 
     std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
     
-    it /= 0;
+    it /= static_cast<float>(0);
     it /= 0.0f;
     it /= 0.0;
     
@@ -789,13 +791,13 @@ int main()
 
     std::cout << "New value of ft = ft / 0 = ";
     
-    ft.operator/=(0);
+    ft.operator/=(0.0f);
 
     std::cout << ft << std::endl;
 
     std::cout << "New value of dt = dt / 0 = "; 
     
-    dt.operator/=(0);
+    dt.operator/=(0.0);
 
     std::cout << dt << std::endl;
 
