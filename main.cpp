@@ -785,19 +785,19 @@ int main()
 
     std::cout << "New value of it = it / 0 = "; 
     
-    it.operator/=(0);
+    it /= 0;
 
     std::cout << it << std::endl;
 
     std::cout << "New value of ft = ft / 0 = ";
     
-    ft.operator/=(0.0f);
+    ft /= 0.0f;
 
     std::cout << ft << std::endl;
 
     std::cout << "New value of dt = dt / 0 = "; 
     
-    dt.operator/=(0.0);
+    dt /= 0.0;
 
     std::cout << dt << std::endl;
 
