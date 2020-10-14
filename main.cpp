@@ -473,7 +473,7 @@ void part3()
 
     std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
     
-    it /= static_cast<float>(0);
+    it /= 0;
     it /= 0.0f;
     it /= 0.0;
     
