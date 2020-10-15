@@ -216,6 +216,13 @@ struct Numeric
         return *this;   
     }
 
+    template<typename OtherType>
+    Numeric& operator=(const OtherType& o) 
+    { 
+        *value = static_cast<NumberType>(o); 
+        return *this; 
+    }
+
     operator Type() const { return *value; }
 
     template<typename OtherType>
@@ -366,6 +373,13 @@ void myNumericFreeFunct(std::unique_ptr<Type>& value)
 
 //====================================
 
+template<typename Type> 
+void cube( std::unique_ptr<Type>& value) // #7
+{
+    auto& v = *value;
+    v = v * v * v;
+}
+/*
 void part3()
 {
     Numeric ft( 5.5f );
@@ -545,7 +559,7 @@ void part6()
     std::cout << "---------------------\n" << std::endl;    
 }
 */
-
+/*
 void part7()
 {
     Numeric ft3(3.0f);
@@ -608,7 +622,7 @@ void part7()
     std::cout << "it3 after: " << it3 << std::endl;
     std::cout << "---------------------\n" << std::endl;    
 }
-
+*/
 #include <iostream>
 int main()
 {
