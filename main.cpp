@@ -252,12 +252,7 @@ struct Numeric
     }
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
-    //template<typename OtherType>
-    //Numeric& operator-=(const OtherType& o) 
-    //{ 
-    //    *value -= static_cast<NumericType>(o); 
-    //    return *this; 
-    //}
+    
     template<typename OtherType>
     Numeric& operator+=(const OtherType& o)
     {
@@ -301,7 +296,7 @@ struct Numeric
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;           
         }
-        *value /= rhs;
+        *value /= static_cast<NumberType>(rhs);
         return *this;   
     }
 
@@ -318,17 +313,10 @@ struct Numeric
         return *this; 
     }
     
-    Numeric& apply(std::function<Numeric&( std::unique_ptr<Type>& )> f)
-    { 
-        if(f)
-            return f(value);
-        return *this;
-    }
-
-    Numeric& apply(void(*f)( std::unique_ptr<Type>&) )
+    template<typename Callable>
+    Numeric& apply(Callable callableFunc)
     {
-        if(f)
-            f(value);
+        callableFunc(value);
         return *this;
     }
 
@@ -337,7 +325,7 @@ struct Numeric
     std::unique_ptr<Type> value;
 
 };
-
+/*
 template<>
 struct Numeric<double>
 {
@@ -406,7 +394,7 @@ struct Numeric<double>
     std::unique_ptr<Type> value;
 
 };
-
+*/
 struct Point
 {
     template<typename Type1, typename Type2>
