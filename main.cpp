@@ -156,7 +156,7 @@ template <typename NumberType>
 struct Numeric
 {
 
-    using Type = NumberType;
+    using Type = Temporary<NumberType>;
 
     Numeric (Type val) : value (std::make_unique<Type>(val))
     {
@@ -168,7 +168,9 @@ struct Numeric
     }
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
-    
+    operator NumberType() const { return *value; }
+    operator NumberType&() { return *value; }
+
     template<typename OtherType>
     Numeric& operator+=(const OtherType& o)
     {
@@ -509,7 +511,6 @@ void part4()
     p3.toString();   
     std::cout << "---------------------\n" << std::endl;
 }
-/*
 void part6()
 {
     FloatType ft3(3.0f);
@@ -623,6 +624,7 @@ void part7()
     std::cout << "---------------------\n" << std::endl;    
 }
 */
+
 #include <iostream>
 int main()
 {
