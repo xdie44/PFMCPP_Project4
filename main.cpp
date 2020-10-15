@@ -1,97 +1,39 @@
 /*
-Prject 4: Part 8 / 9
- video: Chapter 5 Part 6 Task 
+Project 4: Part 9 / 9
+ video: Chapter 5 Part 8
 
-Create a branch named Part8
+Create a branch named Part9
 
- R-Values L-Values Move Semantics.
-
- This Task is going to demonstrate R-Values and writing Generic Code
-
-    Build/Run often with this task to make sure you're not breaking the code with each step.
-    I recommend committing after you get each step working so you can revert to a working version easily if needed.
-    it's very easy to mess this task up. 
+ Rule of 3-5-0 and S.R.P.
  
- Your job is to replace the owned type (the primitive specified by your template argument) from the 
-     Templated Class you created in Ch5 p04 with a struct named Temporary that can behave ENTIRELY as a temporary object.
+ DO NOT EDIT YOUR PREVIOUS main(). 
  
- That means you must use conversion functions to interact with what it owns.
+ 1) add the Leak Detector files from Project5
  
- You need to figure out how to use conversion functions to be able to GET and SET the 'value' member variable.
-    hint: conversion functions can return by value and also by ___...
-  
- 1) Here is a starting point for how to implement your Temporary struct.
+ 2) add these macros after the JUCE_LEAK_DETECTOR macro :
  */
 
-#include <typeinfo>
-#include <iostream>
+#define JUCE_DECLARE_NON_COPYABLE(className) \
+            className (const className&) = delete;\
+            className& operator= (const className&) = delete;
 
-template<typename NumericType>
-struct Temporary
-{
-    Temporary(NumericType t) : v(t)
-    {
-        std::cout << "I'm a Temporary<" << typeid(v).name() << "> object, #"
-                  << counter++ << std::endl;
-    }
-    /*
-     revise these conversion functions to read/write to 'v' here
-     hint: what qualifier do read-only functions usually have?
-     */
-    operator NumericType() const { return v; }
-    operator NumericType&() { return v; }
-private:
-    static int counter;
-    NumericType v;
-};
+#define JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(className) \
+            JUCE_DECLARE_NON_COPYABLE(className) \
+            JUCE_LEAK_DETECTOR(className)
 
 /*
- 2) add the definition of Temporary::counter here, which is a static variable and must be defined outside of the class.
-    Remember the rules about how to define a Template member variable/function outside of the class.
-*/
-template <typename NumericType>
-int Temporary<NumericType>::counter {0};
-/*
- 3) You'll need to template your overloaded math operator functions in your Templated Class from Ch5 p04
-    use static_cast to convert whatever type is passed in to your template's NumericType before performing the +=, -=, etc.  here's an example implementation:
+ 3) add JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Temporary) to the end of the  Temporary<> struct
  
-namespace example
-{
-template<typename NumericType>
-struct Numeric
-{
-    //snip
-    template<typename OtherType>
-    Numeric& operator-=(const OtherType& o) 
-    { 
-        *value -= static_cast<NumericType>(o); 
-        return *this; 
-    }
-    //snip
-};
-}
-
-
- 4) remove your specialized <double> template of your Numeric<T> class from the previous task (ch5 p04)
-    replace the 2 apply() functions in your Numeric<T> with the single templated apply() function from the specialized <double> template.
+ 4) add JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Numeric) to the end of the Numeric<> struct
+ 
+ if you compile it, you'll see lots of errors about deleted functions.
+ 
+ 5) Implement the Rule of 5 on Numeric<> and Temporary<> to fix this.
+ 
+ You should end up with the same program output as Part 8's task if you did it right.
  */
 
 /*
- 5) Template your pow() function the same way you templated the overloaded math operators
-    Remove the call to powInternal() and just call std::pow() directly.
-    you'll need to static_cast<> the pow() argument the same way you did in the overloaded math operators, when you pass it to std::pow()
- */
-/*
- 
- 6) Finally, your conversion function in your templated class is going to be returning this Temporary, 
-        so you should probably NOT return by copy if you want your templated class's owned object to be modified by any math operation.
-    See the previous hint for implementing the conversion functions for the Temporary if you want to get the held value
-*/
-
-
-/*
- 7)   replace main() with the main below
-
  If you did everything correctly, this is the output you should get:
  
 I'm a Temporary<f> object, #0
@@ -126,6 +68,28 @@ i cubed: 531441
 
 Use a service like https://www.diffchecker.com/diff to compare your output. 
 */
+
+#include <typeinfo>
+#include <iostream>
+
+template<typename NumericType>
+struct Temporary
+{
+    Temporary(NumericType t) : v(t)
+    {
+        std::cout << "I'm a Temporary<" << typeid(v).name() << "> object, #"
+                  << counter++ << std::endl;
+    }
+    
+    operator NumericType() const { return v; }
+    operator NumericType&() { return v; }
+private:
+    static int counter;
+    NumericType v;
+};
+
+template <typename NumericType>
+int Temporary<NumericType>::counter {0};
 
 struct A {};
 
@@ -247,81 +211,12 @@ struct Numeric
         return *this;
     }
 
-    private:
+private:
 
     std::unique_ptr<Type> value;
 
 };
-/*
-template<>
-struct Numeric<double>
-{
 
-    using Type = double;
-
-    Numeric (Type val) : value (std::make_unique<Type>(val))
-    {
-
-    }
-    ~Numeric ()
-    {
-        value = nullptr;
-    }
-
-    Numeric& operator+=(Type rhs)
-    {
-        *value += rhs;
-        return *this;
-    }
-    Numeric& operator-=(Type rhs)
-    {
-        *value -= rhs;
-        return *this;
-    }
-    Numeric& operator*=(Type rhs)
-    {
-        *value *= rhs;
-        return *this;
-    }
-
-    Numeric& operator/=(Type rhs)
-    {
-        if (rhs == 0.0)
-        { 
-            std::cout << "warning: floating point division by zero!" << std::endl; 
-        }
-
-        *value /= rhs;
-        return *this;
-    }
-
-    operator Type() const { return *value; }
-
-    Numeric& pow(Type ft)
-    {
-        return powInternal( ft );
-    }
-
-    Numeric& powInternal(Type ft)
-    {
-        *value = std::pow(*value, ft);
-        return *this; 
-    }
-    
-    template<typename Callable>
-
-    Numeric& apply(Callable callableFunc)
-    {
-        callableFunc(value);
-        return *this;
-    }
-
-    private:
-
-    std::unique_ptr<Type> value;
-
-};
-*/
 struct Point
 {
     template<typename Type1, typename Type2>
@@ -381,249 +276,6 @@ void cube( std::unique_ptr<Type>& value) // #7
     auto& v = *value;
     v = v * v * v;
 }
-/*
-void part3()
-{
-    Numeric ft( 5.5f );
-    Numeric dt( 11.1 );
-    Numeric it ( 34 );
-    Numeric pi( 3.14 );
-
-    ft *= ft;
-    ft *= ft;
-    ft /= static_cast<float>(it);
-
-    std::cout << "The result of FloatType^3 divided by IntType is: " << ft << std::endl;
-
-    dt *= 3;
-    dt += static_cast<double>(it);
-
-    std::cout << "The result of DoubleType times 3 plus IntType is : " << dt << std::endl;
-
-    it /= static_cast<int>(pi);
-    it *= static_cast<int>(dt);
-    it -= static_cast<int>(ft);
-
-    std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it << std::endl;
-
-    it *= it;
-
-    std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
-    
-    it /= 0;
-    it /= 0.0f;
-    it /= 0.0;
-    
-    std::cout << it << std::endl;
-    
-    it *= static_cast<int>(ft);
-
-    std::cout << "FloatType x IntType  =  " << it << std::endl;
-
-    it += static_cast<int>(dt);
-    it += static_cast<int>(ft);
-    it *= 24;
-
-    std::cout << "(IntType + DoubleType + FloatType) x 24 = " << it << std::endl;
-}
-
-
-void part4()
-{
-    // ------------------------------------------------------------
-    //                          Power tests
-    // ------------------------------------------------------------
-    Numeric<float> ft1(2);
-    Numeric<double> dt1(2);
-    Numeric<int> it1(2);    
-    int floatExp = 2.0f;
-    int doubleExp = 2.0;
-    int intExp = 2;
-    Numeric<int> itExp(2);
-    Numeric<float> ftExp(2.0f);
-    Numeric<double> dtExp(2.0);
-    
-    // Power tests with FloatType
-    std::cout << "Power tests with FloatType " << std::endl;
-    std::cout << "pow(ft1, floatExp) = " << ft1 << "^" << floatExp << " = " << ft1.pow(floatExp)  << std::endl;
-    std::cout << "pow(ft1, itExp) = " << ft1 << "^" << itExp << " = " << ft1.pow(itExp)  << std::endl;
-    std::cout << "pow(ft1, ftExp) = " << ft1 << "^" << ftExp << " = " << ft1.pow(ftExp)  << std::endl;    
-    std::cout << "pow(ft1, dtExp) = " << ft1 << "^" << dtExp << " = " << ft1.pow(static_cast<float>(dtExp))  << std::endl;    
-    std::cout << "---------------------\n" << std::endl;  
-
-    // Power tests with DoubleType
-    std::cout << "Power tests with DoubleType " << std::endl;
-    std::cout << "pow(dt1, doubleExp) = " << dt1 << "^" << doubleExp << " = " << dt1.pow(intExp)  << std::endl;
-    std::cout << "pow(dt1, itExp) = " << dt1 << "^" << itExp << " = " << dt1.pow(itExp)  << std::endl;
-    std::cout << "pow(dt1, ftExp) = " << dt1 << "^" << ftExp << " = " << dt1.pow(static_cast<double>(ftExp))  << std::endl;    
-    std::cout << "pow(dt1, dtExp) = " << dt1 << "^" << dtExp << " = " << dt1.pow(dtExp)  << std::endl;    
-    std::cout << "---------------------\n" << std::endl;    
-
-    // Power tests with IntType
-    std::cout << "Power tests with IntType " << std::endl;
-    std::cout << "pow(it1, intExp) = " << it1 << "^" << intExp << " = " << it1.pow(intExp)  << std::endl;
-    std::cout << "pow(it1, itExp) = " << it1 << "^" << itExp << " = " << it1.pow(itExp)  << std::endl;
-    std::cout << "pow(it1, ftExp) = " << it1 << "^" << ftExp << " = " << it1.pow(static_cast<int>(ftExp))  << std::endl;    
-    std::cout << "pow(it1, dtExp) = " << it1 << "^" << dtExp << " = " << it1.pow(static_cast<int>(dtExp))  << std::endl;    
-    std::cout << "===============================\n" << std::endl; 
-
-    // ------------------------------------------------------------
-    //                          Point tests
-    // ------------------------------------------------------------
-    Numeric<float> ft2(3.0f);
-    Numeric<double> dt2(4.0);
-    Numeric<int> it2(5);
-    float floatMul = 6.0f;
-
-    // Point tests with float
-    std::cout << "Point tests with float argument:" << std::endl;
-    Point p0(ft2, floatMul);
-    p0.toString();   
-    std::cout << "Multiplication factor: " << floatMul << std::endl;
-    p0.multiply(floatMul); 
-    p0.toString();   
-    std::cout << "---------------------\n" << std::endl;
-
-    // Point tests with FloatType
-    std::cout << "Point tests with FloatType argument:" << std::endl;
-    Point p1(ft2, ft2);
-    p1.toString();   
-    std::cout << "Multiplication factor: " << ft2 << std::endl;
-    p1.multiply(ft2); 
-    p1.toString();   
-    std::cout << "---------------------\n" << std::endl;
-
-    // Point tests with DoubleType
-    std::cout << "Point tests with DoubleType argument:" << std::endl;
-    Point p2(ft2, static_cast<float>(dt2));
-    p2.toString();   
-    std::cout << "Multiplication factor: " << dt2 << std::endl;
-    p2.multiply(dt2); 
-    p2.toString();   
-    std::cout << "---------------------\n" << std::endl;
-
-    // Point tests with IntType
-    std::cout << "Point tests with IntType argument:" << std::endl;
-    Point p3(ft2, static_cast<float>(dt2));
-    p3.toString();   
-    std::cout << "Multiplication factor: " << it2 << std::endl;
-    p3.multiply(it2); 
-    p3.toString();   
-    std::cout << "---------------------\n" << std::endl;
-}
-void part6()
-{
-    FloatType ft3(3.0f);
-    DoubleType dt3(4.0);
-    IntType it3(5);
-    
-    std::cout << "Calling FloatType::apply() using a lambda (adds 7.0f) and FloatType as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply( [&](float& f)-> FloatType& 
-    { 
-        f += 7.0f; 
-        return ft3; 
-    });
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "Calling FloatType::apply() using a free function (adds 7.0f) and void as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply(myFloatFreeFunct);
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling DoubleType::apply() using a lambda (adds 6.0) and DoubleType as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply( [&](double& f)-> DoubleType& 
-    { 
-        f += 6.0;
-        return dt3;
-    });
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "Calling DoubleType::apply() using a free function (adds 6.0) and void as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply(myDoubleFreeFunct);
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling IntType::apply() using a lambda (adds 5) and IntType as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply( [&](int& f)-> IntType& 
-    { 
-        f += 5; 
-        return it3; 
-    });
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "Calling IntType::apply() using a free function (adds 5) and void as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply(myIntFreeFunct);
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;    
-}
-*/
-/*
-void part7()
-{
-    Numeric ft3(3.0f);
-    Numeric dt3(4.0);
-    Numeric it3(5);
-    
-    std::cout << "Calling Numeric<float>::apply() using a lambda (adds 7.0f) and Numeric<float> as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-
-    {
-        using NumericType = decltype(ft3);
-        ft3.apply( [&ft3](std::unique_ptr<NumericType::Type>& ui) -> NumericType&
-        {
-            *ui += 7.0f; 
-            return ft3;
-        } );
-    }
-
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "Calling Numeric<float>::apply() twice using a free function (adds 7.0f) and void as return type:" << std::endl;
-    std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
-    std::cout << "ft3 after: " << ft3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling Numeric<double>::apply() using a lambda (adds 6.0) and Numeric<double> as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-
-    {
-        using NumericType = decltype(dt3);
-        dt3.apply( [&dt3](std::unique_ptr<NumericType::Type>& ui) -> NumericType&
-        {
-            *ui += 6.0; 
-            return dt3;
-        } );
-    }
-    
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "Calling Numeric<double>::apply() twice using a free function (adds 7.0) and void as return type:" << std::endl;
-    std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply(myNumericFreeFunct<double>).apply(myNumericFreeFunct<double>); // This calls the templated apply fcn
-    std::cout << "dt3 after: " << dt3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;
-
-    std::cout << "Calling Numeric<int>::apply() using a lambda (adds 5) and Numeric<int> as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-
-    {
-        using NumericType = decltype(it3);
-        it3.apply( [&it3](std::unique_ptr<NumericType::Type>& ui) -> NumericType&
-        {
-            *ui += 5; 
-            return it3;
-        } );
-    }
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "Calling Numeric<int>::apply() twice using a free function (adds 7) and void as return type:" << std::endl;
-    std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply(myNumericFreeFunct).apply(myNumericFreeFunct);
-    std::cout << "it3 after: " << it3 << std::endl;
-    std::cout << "---------------------\n" << std::endl;    
-}
-*/
 
 #include <iostream>
 int main()
@@ -724,144 +376,4 @@ int main()
  Wait for my code review.
  */
  
-/*
-#include <iostream>
 
-struct FloatType 
-{
-    float add( float lhs, float rhs);
-    float subtract(float lhs, float rhs);
-    float multiply(float lhs, float rhs);
-    float divide(float lhs, float rhs);
-};
-
-float FloatType::add(float lhs, float rhs)
-{
-    return lhs + rhs;
-}
-
-float FloatType::subtract(float lhs, float rhs)
-{
-    return lhs - rhs;
-}
-
-float FloatType::multiply (float lhs, float rhs)
-{
-    return lhs * rhs;
-}
-
-float FloatType::divide (float lhs, float rhs)
-{
-    if (rhs == 0.0f)
-    { 
-        std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
-    }
-    return lhs / rhs;
-}
-
-struct DoubleType 
-{
-    double add( double lhs, double rhs);
-    double subtract(double lhs, double rhs);
-    double multiply(double lhs, double rhs);
-    double divide(double lhs, double rhs);
-};
-
-double DoubleType::add(double lhs, double rhs)
-{
-    return lhs + rhs;
-}
-
-double DoubleType::subtract(double lhs, double rhs)
-{
-    return lhs - rhs;
-}
-
-double DoubleType::multiply (double lhs, double rhs)
-{
-    return lhs * rhs;
-}
-
-double DoubleType::divide (double lhs, double rhs)
-{
-    if (rhs == 0.0)
-    { 
-        std::cout << std::endl << "warning, floating point division by zero returns 'inf' !" << std::endl; 
-    } 
-    return lhs / rhs;
-}
-
-struct IntType 
-{
-    int add( int lhs, int rhs);
-    int subtract(int lhs, int rhs);
-    int multiply(int lhs, int rhs);
-    int divide(int lhs, int rhs);
-};
-
-int IntType::add(int lhs, int rhs)
-{
-    return lhs + rhs;
-}
-
-int IntType::subtract(int lhs, int rhs)
-{
-    return lhs - rhs;
-}
-
-int IntType::multiply (int lhs, int rhs)
-{
-    return lhs * rhs;
-}
-
-int IntType::divide (int lhs, int rhs)
-{
-    if (rhs == 0.0)
-    { 
-        std::cout << "error, integer division by zero will crash the program!" << std::endl;
-        std::cout << "returning lhs" << std::endl;
-        return lhs;
-    } 
-    return lhs / rhs;
-}
-
-int main() 
-
-{
-    FloatType ft;
-    std::cout << "result of ft.add(): " << ft.add( 123.456f, 432.1f) << std::endl;
-    std::cout << "result of ft.subtract(): " << ft.subtract( 123.456f, 432.1f) << std::endl;
-    std::cout << "result of ft.multiply(): " << ft.multiply( 123.456f, 432.1f) << std::endl;
-    std::cout << "result of ft.divide(): " << ft.divide( 123.456f, 432.1f) << std::endl;
-
-    std::cout << "result of ft.add(): " << ft.add( 4444.56f, 0.0f)  << std::endl;
-    std::cout << "result of ft.subtract(): " << ft.subtract( 4444.56f, 0.0f) << std::endl;
-    std::cout << "result of ft.multiply(): " << ft.multiply( 4444.56f, 0.0f) << std::endl;
-    std::cout << "result of ft.divide(): " << ft.divide( 4444.56f, 0.0f) << std::endl;
-
-    DoubleType db;
-    std::cout << "result of db.add(): " << db.add( 123.456, 432.1) << std::endl;
-    std::cout << "result of db.subtract(): " << db.subtract( 123.456, 432.1) << std::endl;
-    std::cout << "result of db.multiply(): " << db.multiply( 123.456, 432.1) << std::endl;
-    std::cout << "result of db.divide(): " << db.divide( 123.456, 432.1) << std::endl;
-
-    std::cout << "result of db.add(): " << db.add( 123.456, 0.0) << std::endl;
-    std::cout << "result of db.subtract(): " << db.subtract( 123.456, 0.0) << std::endl;
-    std::cout << "result of db.multiply(): " << db.multiply( 123.456, 0.0) << std::endl;
-    std::cout << "result of db.divide(): " << db.divide( 123.456, 0.0) << std::endl;
-
-    IntType i;
-    std::cout << "result of i.add(): " << i.add( 10, 20) << std::endl;
-    std::cout << "result of i.subtract(): " << i.subtract( 10, 20) << std::endl;
-    std::cout << "result of i.multiply(): " << i.multiply( 10, 20) << std::endl;
-    std::cout << "result of i.divide(): " << i.divide( 10, 20) << std::endl;
-
-    std::cout << "result of i.add(): " << i.add( 10, 0) << std::endl;
-    std::cout << "result of i.subtract(): " << i.subtract( 10, 0) << std::endl;
-    std::cout << "result of i.multiply(): " << i.multiply( 10, 0) << std::endl;
-    std::cout << "result of i.divide(): " << i.divide( 10, 0) << std::endl;
-
-    std::cout << "good to go!" << std::endl;
-}
-
-*/
