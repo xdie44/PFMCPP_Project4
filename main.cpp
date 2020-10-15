@@ -252,21 +252,28 @@ struct Numeric
     }
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
-
-
-    Numeric& operator+=(Type rhs)
+    //template<typename OtherType>
+    //Numeric& operator-=(const OtherType& o) 
+    //{ 
+    //    *value -= static_cast<NumericType>(o); 
+    //    return *this; 
+    //}
+    template<typename OtherType>
+    Numeric& operator+=(const OtherType& o)
     {
-        *value += rhs;
+        *value += static_cast<NumberType>(o);
         return *this;
     }
-    Numeric& operator-=(Type rhs)
+    template<typename OtherType>
+    Numeric& operator-=(const OtherType& o)
     {
-        *value -= rhs;
+        *value -= static_cast<NumberType>(o);
         return *this;
     }
-    Numeric& operator*=(Type rhs)
+    template<typename OtherType>
+    Numeric& operator*=(const OtherType& o)
     {
-        *value *= rhs;
+        *value *= static_cast<NumberType>(o);
         return *this;
     }
 
