@@ -135,7 +135,7 @@ struct Numeric
 
     using Type = Temporary<NumberType>;
 
-    Numeric (Type val) : value (std::make_unique<Type>(val))
+    Numeric (NumberType val) : value (std::make_unique<Type>(val))
     {
 
     }
