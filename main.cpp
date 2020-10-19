@@ -71,6 +71,7 @@ Use a service like https://www.diffchecker.com/diff to compare your output.
 
 #include <typeinfo>
 #include <iostream>
+#include "LeakedObjectDetector.h"
 
 template<typename NumericType>
 struct Temporary
@@ -80,6 +81,16 @@ struct Temporary
         std::cout << "I'm a Temporary<" << typeid(v).name() << "> object, #"
                   << counter++ << std::endl;
     }
+
+    Temporary(Temporary&& other) : v(std::move(other.v)) { } 
+
+    Temporary& operator=(Temporary&& other)
+    {
+        v = std::move(other.v); 
+        return *this;       
+    }
+
+    ~Temporary() { };
     
     operator NumericType() const { return v; }
     operator NumericType&() { return v; }
@@ -128,6 +139,18 @@ struct Numeric
     {
 
     }
+
+    Numeric(Numeric&& other)
+    {
+        value = std::move(other.value);
+    }
+
+    Numeric& operator= (Numeric&& other)
+    {
+        value = std::move(other.value);
+        return *this;
+    } 
+
     ~Numeric ()
     {
         value = nullptr;
