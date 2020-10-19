@@ -90,7 +90,7 @@ struct Temporary
         return *this;       
     }
 
-    ~Temporary() { };
+    ~Temporary() = default;
     
     operator NumericType() const { return v; }
     operator NumericType&() { return v; }
@@ -151,10 +151,7 @@ struct Numeric
         return *this;
     } 
 
-    ~Numeric ()
-    {
-        value = nullptr;
-    }
+    ~Numeric() = default;
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
     operator NumberType() const { return *value; }
