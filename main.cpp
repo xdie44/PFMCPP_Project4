@@ -71,6 +71,7 @@ Use a service like https://www.diffchecker.com/diff to compare your output.
 
 #include <typeinfo>
 #include <iostream>
+#include "LeakedObjectDetector.h"
 
 template<typename NumericType>
 struct Temporary
@@ -80,12 +81,24 @@ struct Temporary
         std::cout << "I'm a Temporary<" << typeid(v).name() << "> object, #"
                   << counter++ << std::endl;
     }
+
+    Temporary(Temporary&& other) : v(std::move(other.v)) { } 
+
+    Temporary& operator=(Temporary&& other)
+    {
+        v = std::move(other.v); 
+        return *this;       
+    }
+
+    ~Temporary() = default;
     
     operator NumericType() const { return v; }
     operator NumericType&() { return v; }
 private:
     static int counter;
     NumericType v;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Temporary)
 };
 
 template <typename NumericType>
@@ -122,14 +135,23 @@ struct Numeric
 
     using Type = Temporary<NumberType>;
 
-    Numeric (Type val) : value (std::make_unique<Type>(val))
+    Numeric (NumberType val) : value (std::make_unique<Type>(val))
     {
 
     }
-    ~Numeric ()
+
+    Numeric(Numeric&& other)
     {
-        value = nullptr;
+        value = std::move(other.value);
     }
+
+    Numeric& operator= (Numeric&& other)
+    {
+        value = std::move(other.value);
+        return *this;
+    } 
+
+    ~Numeric() = default;
 
     //float* value = nullptr; FIXME: 5) make your member variable private.
     operator NumberType() const { return *value; }
@@ -214,6 +236,8 @@ struct Numeric
 private:
 
     std::unique_ptr<Type> value;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Numeric)
 
 };
 
